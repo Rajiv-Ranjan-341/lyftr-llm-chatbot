@@ -37,7 +37,7 @@ class Settings(BaseSettings):
 
     # --- key pool -----------------------------------------------------------
     llm_api_keys: str = ""
-    llm_model: str = "gemini/gemini-2.0-flash"
+    llm_model: str = "groq/openai/gpt-oss-120b"
     # Optional: one model per key, positionally aligned with LLM_API_KEYS.
     # Falls back to LLM_MODEL for every key that has no entry here.
     llm_models: str = ""

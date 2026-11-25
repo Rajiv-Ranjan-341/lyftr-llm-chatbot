@@ -86,7 +86,19 @@ class GenerationResult:
 
 # --------------------------------------------------------------------- cache
 class ResponseCache:
-    """Thin wrapper over LiteLLM's cache backend with a contract-exact key."""
+    """Thin wrapper over LiteLLM's cache backend with a contract-exact key.
+
+    The ``Cache`` object is built but deliberately **not** assigned to the
+    global ``litellm.cache``. Registering it globally re-arms LiteLLM's own
+    success handler, which then tries to write every completion into the cache
+    using its default key derivation - on Python 3.13 that path raises
+    ``AttributeError: __annotations__`` and dumps a traceback into the log on
+    every live call. It is also the wrong key: LiteLLM folds call parameters
+    including the API key into it, so key_1 and key_2 would not share a cache.
+
+    Driving ``get``/``set`` directly keeps LiteLLM's storage backend while
+    owning the key and the stored payload.
+    """
 
     def __init__(self, settings: Settings) -> None:
         self.enabled = settings.cache_enabled
@@ -101,24 +113,25 @@ class ResponseCache:
             from litellm import Cache  # type: ignore
 
         cache_type = (settings.cache_type or "disk").strip().lower()
+        cache_obj = None
         try:
             if cache_type == "disk":
                 os.makedirs(settings.cache_dir, exist_ok=True)
-                litellm.cache = Cache(type="disk", disk_cache_dir=settings.cache_dir)
+                cache_obj = Cache(type="disk", disk_cache_dir=settings.cache_dir)
                 self.kind = "disk"
             else:
-                litellm.cache = Cache(type="local")
+                cache_obj = Cache(type="local")
                 self.kind = "local"
         except Exception as exc:  # pragma: no cover - e.g. unwritable volume
             logger.warning(
                 "disk cache unavailable (%s), falling back to in-memory cache", exc
             )
-            litellm.cache = Cache(type="local")
+            cache_obj = Cache(type="local")
             self.kind = "local"
 
         # ``Cache.cache`` is the underlying store (DiskCache / InMemoryCache),
         # both exposing get_cache(key) / set_cache(key, value).
-        self.backend = getattr(litellm.cache, "cache", None)
+        self.backend = getattr(cache_obj, "cache", None)
         if self.backend is None:  # pragma: no cover - defensive
             self.enabled = False
             self.kind = "disabled"

@@ -6,9 +6,9 @@ from app.config import ApiKey, Settings
 
 
 def test_http_client_logging_is_muted():
-    """Google AI Studio passes the API key as a `?key=` query parameter, and
-    httpx logs full request URLs at INFO. If that logger is ever turned back
-    up, real keys end up in the platform's log viewer."""
+    """httpx logs full request URLs at INFO, and some providers put the API key
+    in the query string (Google AI Studio uses `?key=<secret>`). If that logger
+    is ever turned back up, real keys end up in the platform's log viewer."""
     import app.main  # noqa: F401  (import applies the logging configuration)
 
     for name in ("httpx", "httpcore"):
@@ -16,7 +16,7 @@ def test_http_client_logging_is_muted():
 
 
 def test_api_key_repr_masks_the_secret():
-    key = ApiKey(key_id="key_1", secret="super-secret-value", model="gemini/x")
+    key = ApiKey(key_id="key_1", secret="super-secret-value", model="groq/x")
 
     assert "super-secret-value" not in repr(key)
     assert "key_1" in repr(key)

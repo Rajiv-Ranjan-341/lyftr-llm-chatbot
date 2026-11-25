@@ -78,7 +78,7 @@ def provider(monkeypatch: pytest.MonkeyPatch) -> FakeProvider:
 def settings(tmp_path) -> Settings:
     return Settings(
         llm_api_keys=f"{KEY_ONE},{KEY_TWO}",
-        llm_model="gemini/gemini-2.0-flash",
+        llm_model="groq/openai/gpt-oss-120b",
         database_url=f"sqlite:///{tmp_path.as_posix()}/app.db",
         allowed_origins="*",
         enable_failure_simulation=True,

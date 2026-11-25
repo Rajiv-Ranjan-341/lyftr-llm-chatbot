@@ -29,9 +29,12 @@ logging.basicConfig(
     format="%(asctime)s %(levelname)s %(name)s %(message)s",
 )
 
-# httpx logs every request URL at INFO. Google AI Studio passes the API key as
-# a `?key=` query parameter, so leaving this on writes real keys straight into
-# the platform's log viewer. Warnings and errors still come through.
+# httpx logs every outbound request URL at INFO. Some providers pass the API
+# key in the query string rather than a header - Google AI Studio uses
+# `?key=<secret>` - so leaving this on writes real keys straight into the
+# platform's log viewer. Groq uses a bearer header and is not affected, but the
+# pool is provider-agnostic and the cost of being wrong here is a leaked key.
+# Warnings and errors still come through.
 for _noisy in ("httpx", "httpcore", "LiteLLM"):
     logging.getLogger(_noisy).setLevel(logging.WARNING)
 

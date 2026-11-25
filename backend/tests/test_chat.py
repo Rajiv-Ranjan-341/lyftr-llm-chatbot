@@ -15,7 +15,7 @@ def test_chat_returns_contract_shape(client, provider):
 
     meta = body["metadata"]
     assert meta["resolution_source"] == "LIVE_INFERENCE"
-    assert meta["model"] == "gemini/gemini-2.0-flash"
+    assert meta["model"] == "groq/openai/gpt-oss-120b"
     assert isinstance(meta["latency_ms"], int) and meta["latency_ms"] >= 0
     assert meta["input_tokens"] > 0
     assert meta["output_tokens"] > 0

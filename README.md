@@ -304,7 +304,7 @@ requests write nothing to history.
    | Key | Value |
    | --- | --- |
    | `LLM_API_KEYS` | your two real keys, comma-separated |
-   | `LLM_MODEL` | `gemini/gemini-2.0-flash` |
+   | `LLM_MODEL` | `groq/openai/gpt-oss-120b` |
    | `DATABASE_URL` | `sqlite:////data/app.db` |
    | `ALLOWED_ORIGINS` | your Vercel URL (add it after step 2 below) |
    | `ENABLE_FAILURE_SIMULATION` | `true` |
@@ -337,7 +337,12 @@ requests write nothing to history.
   the cache bypass under simulation, and the write-after-success transaction
   boundary were reasoned through against the contract rather than accepted as
   generated.
-- **Model provider:** Google AI Studio (Gemini), two keys from two projects.
+- **Model provider:** Groq, serving `openai/gpt-oss-120b`. Two keys form the
+  pool. Groq was chosen for its free tier and sub-second latency, which makes
+  the gap between a live call and a cache hit easy to see in the demo. Nothing
+  in the code is Groq-specific — the pool is just LiteLLM model strings, so
+  swapping `LLM_MODEL` to `gemini/gemini-2.0-flash` or any other provider works
+  without a code change.
 - **Docs:** LiteLLM caching and exception-handling docs, FastAPI exception
   handlers, Render Docker + Vercel Vite deployment guides.
 
@@ -352,7 +357,7 @@ requests write nothing to history.
 | **Health strip in the header** | Live `keys_configured` / `cache_enabled` / backend status, so a misconfigured deploy is obvious immediately. |
 | **Per-session system prompt** | Stored in a `sessions` table, so it keeps applying to later turns without the client resending it on every request. |
 | **Persistent disk cache** | `CACHE_DIR` on the `/data` volume, so cache hits survive a container restart, not just a process lifetime. |
-| **Mixed-model key pools** | `LLM_MODELS` optionally assigns a different model per key, so the pool can span providers (e.g. Gemini → Groq) rather than just keys. |
+| **Mixed-model key pools** | `LLM_MODELS` optionally assigns a different model per key, so the pool can span models or providers (e.g. Groq → Gemini) rather than just keys. |
 | **Secret-safe logging** | `ApiKey.__repr__` masks the secret, so no accidental `print`/traceback can leak a key. |
 | **`Shift+Enter` for newlines, auto-scroll, typing indicator** | Small chat-UX details that make the app feel finished. |
 | **Container healthchecks + non-root images** | Both Dockerfiles are multi-stage, run as a non-root user and declare `HEALTHCHECK`. |
