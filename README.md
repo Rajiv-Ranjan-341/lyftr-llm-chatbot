@@ -13,13 +13,19 @@ React + Vite · FastAPI · LiteLLM · SQLite · Docker
 
 | Tier | URL |
 | --- | --- |
-| Frontend | `https://<your-app>.vercel.app` |
-| Backend | `https://<your-backend>.onrender.com` |
-| Health check | `https://<your-backend>.onrender.com/health` |
+| Frontend | https://lyftr-llm-chatbot.vercel.app |
+| Backend | https://lyftr-llm-chatbot-rpo2.onrender.com |
+| Health check | https://lyftr-llm-chatbot-rpo2.onrender.com/health |
+| Repository | https://github.com/Rajiv-Ranjan-341/lyftr-llm-chatbot |
 
-> Fill these in after deploying. See [Deploying](#deploying) for the steps.
 > The backend runs on Render's free plan, which sleeps after ~15 minutes of
-> inactivity — the first request after a nap can take 30–50 seconds.
+> inactivity — the first request after a nap can take 30–50 seconds. Hitting
+> `/health` wakes it.
+
+Both tiers were verified against the contract after deployment with
+`./scripts/verify.sh https://lyftr-llm-chatbot-rpo2.onrender.com` — 35/35
+checks passing, including a 456 ms live call against a 2 ms cache hit and
+failover from `key_1` to `key_2`.
 
 ---
 
