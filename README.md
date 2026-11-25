@@ -177,7 +177,23 @@ carry no per-request metadata.
 
 ## 4. Verification
 
-With the stack running, `BASE=http://localhost:8000` (or your Render URL).
+### Everything at once
+
+```bash
+./scripts/verify.sh                                 # local
+./scripts/verify.sh https://your-backend.onrender.com   # deployed
+# or: make verify BASE=https://your-backend.onrender.com
+```
+
+One scripted pass over the whole contract — health, a live call followed by a
+cache hit on the same opening message, cache-hit latency, failover on
+`key_1=429` and `key_1=500`, the clean 503 when the pool is exhausted, the
+empty history after a failure, multi-turn recall, session isolation, 404s and
+every 422 case. It prints a pass/fail line per check and exits non-zero if any
+fail. Needs only `curl` and `python`.
+
+The individual steps below are the same checks, if you would rather run them
+by hand. `BASE=http://localhost:8000` (or your Render URL).
 
 ### Health
 

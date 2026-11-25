@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 COMPOSE := docker compose
 
-.PHONY: help up down build logs ps restart test clean env
+.PHONY: help up down build logs ps restart test verify clean env
 
 help: ## Show available targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -34,6 +34,9 @@ restart: ## Restart both services
 
 test: ## Run the backend test suite
 	cd backend && python -m pytest
+
+verify: ## Run the API contract check against BASE (default http://localhost:8000)
+	bash scripts/verify.sh $(BASE)
 
 clean: ## Stop the stack and delete the SQLite volume (destroys history)
 	$(COMPOSE) down -v
