@@ -13,7 +13,7 @@ React + Vite · FastAPI · LiteLLM · SQLite · Docker
 
 | Tier | URL |
 | --- | --- |
-| Frontend | https://lyftr-llm-chatbot.vercel.app |
+| Frontend | https://lyftr-llm-chatbot-two.vercel.app |
 | Backend | https://lyftr-llm-chatbot-rpo2.onrender.com |
 | Health check | https://lyftr-llm-chatbot-rpo2.onrender.com/health |
 | Repository | https://github.com/Rajiv-Ranjan-341/lyftr-llm-chatbot |
