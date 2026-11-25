@@ -1,0 +1,15 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+tests/
+data/
+*.db
+*.db-wal
+*.db-shm
+.env
+.env.*
+requirements-dev.txt
+pytest.ini
